@@ -64,8 +64,9 @@ public class Chunk
         }
 
 
-        ChunkMesh = Mesher.GenerateChunkMesh(this);
-        DoneMeshing = true;
+        Task.Run(() => 
+        {ChunkMesh = Mesher.GenerateChunkMesh(this);}).ContinueWith((W)=> DoneMeshing = true);
+
 
 
     }

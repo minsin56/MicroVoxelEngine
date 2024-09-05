@@ -19,10 +19,11 @@ public class World
     {
         Graphics.ActiveCamera = new Camera(new OpenTK.Mathematics.Vector3(0,0,-10));
         Noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
-        
 
-        GenerateChunk(new Vector3(0,0,0));
-            
+        for(int x = 0;x < 5; x++)
+        {
+            GenerateChunk(new Vector3(x,0,0));
+        }            
           
     }
 

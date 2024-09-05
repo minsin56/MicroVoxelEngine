@@ -35,3 +35,4 @@ e:\Projects\VoxelGame\VoxelGameCS\bin\Debug\net8.0\Friflo.Json.Burst.dll
 e:\Projects\VoxelGame\VoxelGameCS\bin\Debug\net8.0\Friflo.Json.Fliox.dll
 e:\Projects\VoxelGame\VoxelGameCS\bin\Debug\net8.0\Friflo.Json.Fliox.Annotation.dll
 e:\Projects\VoxelGame\VoxelGameCS\bin\Debug\net8.0\SharpNoise.dll
+e:\Projects\VoxelGame\VoxelGameCS\obj\Debug\net8.0\VoxelGameCS.sourcelink.json
