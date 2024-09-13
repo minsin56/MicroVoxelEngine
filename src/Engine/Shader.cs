@@ -60,6 +60,11 @@ public class Shader
         return GL.GetUniformLocation(Handle,Name);
     }
 
+    public void SetInt(string Name, int Value)
+    {
+        GL.Uniform1(GetUniformLocation(Name),Value);
+    }
+
     public void SetMatrix(string Name, Matrix4 Mat)
     {
         GL.UniformMatrix4(GetUniformLocation(Name),false,ref Mat);

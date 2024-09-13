@@ -1,4 +1,5 @@
 using OpenTK.Graphics.OpenGL4;
+using ObjectTK.Buffers;
 using OpenTK.Mathematics;
 
 namespace VoxelGame.Engine;
@@ -17,22 +18,28 @@ public class Mesh
 
         int VBO = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer,VBO);
-        GL.BufferData(BufferTarget.ArrayBuffer,Vertices.Length * sizeof(float) * 8,Vertices,BufferUsageHint.StaticDraw);
+        GL.BufferData(BufferTarget.ArrayBuffer,Vertices.Length * Vertex.SizeInBytes,Vertices,BufferUsageHint.StaticDraw);
 
         int EBO = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ElementArrayBuffer,EBO);
         GL.BufferData(BufferTarget.ElementArrayBuffer,Indices.Length * sizeof(uint),Indices,BufferUsageHint.StaticDraw);
 
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0);
+
+        // Set the position attribute (location = 0 in shader)
+        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, 0);
         GL.EnableVertexAttribArray(0);
 
-
-        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 3 * sizeof(float));
+        // Set the color attribute (location = 1 in shader)
+        GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, Vector3.SizeInBytes);
         GL.EnableVertexAttribArray(1);
 
-
-        GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 6 * sizeof(float));   
+        // Set the normal attribute (location = 2 in shader)
+        GL.VertexAttribPointer(2, 3, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, 2 * Vector3.SizeInBytes);
         GL.EnableVertexAttribArray(2);
+
+        // Set the UV attribute (location = 3 in shader)
+        GL.VertexAttribPointer(3, 2, VertexAttribPointerType.Float, false, Vertex.SizeInBytes, 3 * Vector3.SizeInBytes);
+        GL.EnableVertexAttribArray(3);
 
         GL.BindVertexArray(0);
     }

@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Friflo.Engine.ECS" Version="2.2.0" />
+    <PackageReference Include="ObjectTK_net70" Version="1.0.0" />
     <PackageReference Include="OpenTK" Version="4.8.2" />
     <PackageReference Include="SharpNoise" Version="0.12.1.1" />
     <PackageReference Include="StbImageSharp" Version="2.27.14" />

@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Drawing;
 using OpenTK.Mathematics;
 using VoxelGame.Engine;
 using SharpNoise;
@@ -9,11 +8,9 @@ namespace VoxelGame.Voxel;
 
 public class Chunk
 {
+    public static int VoxelsPerChunk = 32;
     public Mesh ChunkMesh;
     public Vector3 Center;
-
-    Shader MainShader;
-    Texture Tex;
 
     bool DoneMeshing = false;
 
@@ -28,32 +25,29 @@ public class Chunk
         this.Mesher = Mesher;
         this.Center = Center;
         this.Noise = Noise;
-        Octree = new VoxelOctree(128,Center);
+        Octree = new VoxelOctree(VoxelsPerChunk ,Vector3.Zero);
         World = Owner;
-        MainShader = new Shader("Shaders/Main.vert", "Shaders/Main.frag");
-        Tex = (Texture)new Texture2D();
-        Tex.Load("wall.jpg");
     }
 
+
+    
     public void Generate()
     {
 
-        
-        RidgedMulti Ridged = new RidgedMulti();
-        Ridged.OctaveCount = 10;
-        for (float x = 0; x < 128; x++)
+        for (float x = 0; x < VoxelsPerChunk; x++)
         {
-            for (float y = 0; y < 128; y++)
+            for (float y = 0; y < VoxelsPerChunk; y++)
             {
-                for (float z = 0; z < 128; z++)
+                for (float z = 0; z < VoxelsPerChunk; z++)
                 {
-
-                    float NoiseValue = (float)Ridged.GetValue(x * 0.01f + Center.X,y  * 0.01f + Center.Y, z * 0.01f + Center.Z);
-                    float ColorNoise = (float)Noise.GetNoise(x * 16,y * 16,z * 16);
-                    
-                    if (NoiseValue < 0.4f && IsInSphere(x,y,z, 128 / 2, 128 / 2, 128 / 2, 128 / 2))
+                    Vector3 VoxelPos = new Vector3(x,y,z) * 0.1f;
+                    Vector3 WorldVoxelPos = VoxelPos + (Center * 0.1f * VoxelsPerChunk);
+                    float NoiseValue = (float)Noise.GetNoise(x + (Center.X * VoxelsPerChunk) ,0, z  + (Center.Z * VoxelsPerChunk)) * 32;
+                    float ColorNoise = (float)Noise.GetNoise((x + (Center.X * 64)) * 512 ,(y + (Center.Y * 64)) * 512,(z + (Center.Z * 64)) * 512);
+                    float WorldY = y + (Center.Y * VoxelsPerChunk);
+                    if (WorldY + NoiseValue < 64)
                     {
-                        Octree.SetVoxel(new Vector3(x * 0.1f, y * 0.1f, z * 0.1f),
+                        Octree.SetVoxel(VoxelPos,
                         new Vector3(0, Math.Clamp(ColorNoise * 1.2f,0.1f,1), 0),0.1f,true);
                     }
    
@@ -64,21 +58,18 @@ public class Chunk
         }
 
 
-        Task.Run(() => 
-        {ChunkMesh = Mesher.GenerateChunkMesh(this);}).ContinueWith((W)=> DoneMeshing = true);
+        RegenMesh();
 
 
 
     }
 
-
-    private bool IsInSphere(float x, float y, float z, float ox, float oy, float oz, float r)
+    public void RegenMesh()
     {
- x -= ox;
-    y -= oy;
-    z -= oz;
-    return (x*x+y*y+z*z < r*r);
+               Task.Run(() => 
+        {ChunkMesh = Mesher.GenerateChunkMesh(this);}).ContinueWith((W)=> DoneMeshing = true);
     }
+
     private void ApplyMesh()
     {
         ChunkMesh.GenerateBuffers();
@@ -96,10 +87,10 @@ public class Chunk
 
     public void Render()
     {
-        MainShader.Use();
-        MainShader.SetMatrix("Transform", Matrix4.CreateTranslation(Center * 12.0f));
-        MainShader.SetMatrix("View", Graphics.ActiveCamera.GetViewMatrix());
-        MainShader.SetMatrix("Projection", Graphics.ActiveCamera.GetProjectionMatrix());
+        World.MainShader.Use();
+        World.MainShader.SetMatrix("Transform", Matrix4.CreateTranslation(Center * (VoxelsPerChunk * 0.1f - 0.1f)));
+        World.MainShader.SetMatrix("View", Graphics.ActiveCamera.GetViewMatrix());
+        World.MainShader.SetMatrix("Projection", Graphics.ActiveCamera.GetProjectionMatrix());
 
         ChunkMesh?.Draw();
     }

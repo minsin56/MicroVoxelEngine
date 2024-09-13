@@ -5,6 +5,7 @@ namespace VoxelGame.Voxel;
 
 public class World
 {
+    public static World ActiveWorld;
     public List<Chunk> ActiveChunks = new List<Chunk>();
     public Queue<Chunk> ChunksToUpdate = new Queue<Chunk>();
 
@@ -14,15 +15,26 @@ public class World
     ChunkMesher Mesher = new ChunkMesher();
     FastNoiseLite Noise = new FastNoiseLite();
 
+    public Shader MainShader;
+
 
     public World()
     {
+
+        ActiveWorld = this;
+        MainShader = new Shader("Shaders/Main.vert", "Shaders/Main.frag");
         Graphics.ActiveCamera = new Camera(new OpenTK.Mathematics.Vector3(0,0,-10));
         Noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
 
-        for(int x = 0;x < 5; x++)
+        for(int x = -5;x < 5; x++)
         {
-            GenerateChunk(new Vector3(x,0,0));
+            for(int y = 0; y < 3; y++)
+            {
+                for(int z = -5;z < 5;z++)
+                {
+                    GenerateChunk(new Vector3(x,y,z));
+                }
+            }
         }            
           
     }

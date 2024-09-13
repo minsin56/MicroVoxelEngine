@@ -1,6 +1,8 @@
+using System.Numerics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using VoxelGame.Voxel;
 
 namespace VoxelGame.Engine
 {
@@ -27,9 +29,7 @@ namespace VoxelGame.Engine
         protected override void OnRenderFrame(FrameEventArgs args)
         {
             base.OnRenderFrame(args);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            GL.ClearColor(0.5f,0.3f,0.3f,1);
             LoadedScene.Update((float)args.Time);
             LoadedScene.Render((float)args.Time);
 
@@ -85,6 +85,21 @@ namespace VoxelGame.Engine
             if(e.Key == OpenTK.Windowing.GraphicsLibraryFramework.Keys.S)
             {
                 Graphics.ActiveCamera.Position -= Graphics.ActiveCamera.Forward * 0.5f;
+            }
+
+            if(e.Key == OpenTK.Windowing.GraphicsLibraryFramework.Keys.Tab)
+            {
+                for(int x = 0; x < 16;x++)
+                {
+                    for(int y = 0; y < 16;y++)
+                    {
+                        for(int z = 0; z < 16;z++)
+                        {
+                            World.ActiveWorld.ActiveChunks[0].Octree.SetVoxel(new OpenTK.Mathematics.Vector3(x * 0.1f,y * 0.1f,z * 0.1f),new OpenTK.Mathematics.Vector3(0,0,0),0.1f,true);
+                        }
+                    }
+                }
+                World.ActiveWorld.ActiveChunks[0].RegenMesh();
             }
             Graphics.ActiveCamera.UpdateCameraVectors();
         }

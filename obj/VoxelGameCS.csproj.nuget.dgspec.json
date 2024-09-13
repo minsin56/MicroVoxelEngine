@@ -53,6 +53,10 @@
               "target": "Package",
               "version": "[2.2.0, )"
             },
+            "ObjectTK_net70": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
             "OpenTK": {
               "target": "Package",
               "version": "[4.8.2, )"

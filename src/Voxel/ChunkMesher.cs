@@ -106,7 +106,7 @@ public class ChunkMesher
             {
                 CubeVertex[i].Position = CubeVertices[i];
                 CubeVertex[i].TexCoord = new Vector2(0, 0);
-                CubeVertex[i].Normal = Node.Color;
+                CubeVertex[i].Color = Node.Color;
             }
 
             Vector3[] Directions =
@@ -134,7 +134,7 @@ public class ChunkMesher
             {
                 if(!Chunk.Octree.IsNeighborVoxel(Node,Directions[i] * Node.Size))
                 {
-                    AddFace(CubeVertex, CubeFaceIndices[i], Node.Position, Vertices, Indices, Size, Node);
+                    AddFace(CubeVertex, CubeFaceIndices[i], Directions[i], Vertices, Indices, Size, Node);
                 }
                 
             }
@@ -151,13 +151,15 @@ public class ChunkMesher
         }
     }
 
-    public void AddFace(Vertex[] InVertices, uint[] InIndices, Vector3 Position, List<Vertex> Vertices, List<uint> Indices, float Size, OctreeNode Node)
+    public void AddFace(Vertex[] InVertices, uint[] InIndices, Vector3 Normal, List<Vertex> Vertices, List<uint> Indices, float Size, OctreeNode Node)
     {
         uint Offset = (uint)Vertices.Count;
 
         foreach (int Index in InIndices)
         {
-            Vertices.Add(InVertices[Index]);
+            Vertex V = InVertices[Index];
+            V.Normal = Normal;
+            Vertices.Add(V);
         }
 
         Indices.Add(Offset);
