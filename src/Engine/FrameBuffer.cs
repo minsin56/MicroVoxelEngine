@@ -1,3 +1,4 @@
+using Friflo.Json.Fliox.Mapper.Map;
 using OpenTK.Graphics.OpenGL4;
 
 namespace VoxelGame.Engine;
@@ -25,17 +26,21 @@ public class FrameBuffer
 
         DepthTexture = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2D,DepthTexture);
-        GL.TexImage2D(TextureTarget.Texture2D,0,PixelInternalFormat.DepthComponent,Width,Height,0,PixelFormat.DepthComponent,PixelType.Float,IntPtr.Zero);
+        GL.TexImage2D(TextureTarget.Texture2D,0,PixelInternalFormat.DepthComponent32,Width,Height,0,PixelFormat.DepthComponent,PixelType.Float,IntPtr.Zero);
         GL.TexParameter(TextureTarget.Texture2D,TextureParameterName.TextureMinFilter,(int)TextureMinFilter.Nearest);
         GL.TexParameter(TextureTarget.Texture2D,TextureParameterName.TextureMagFilter,(int)TextureMagFilter.Nearest);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBorderColor, new float[] { 1.0f, 1.0f, 1.0f, 1.0f });
 
         GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, DepthTexture, 0);
 
+        var Status = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
 
+        if(Status != FramebufferErrorCode.FramebufferComplete)
+        {
+            throw new Exception("F");
+        }
         GL.BindFramebuffer(FramebufferTarget.Framebuffer,0);
-
-
     }
 }

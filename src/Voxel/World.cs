@@ -3,7 +3,7 @@ using VoxelGame.Engine;
 
 namespace VoxelGame.Voxel;
 
-public class World
+public class World: IRenderable
 {
     public static World ActiveWorld;
     public List<Chunk> ActiveChunks = new List<Chunk>();
@@ -47,14 +47,6 @@ public class World
         return Chunk;
     }
 
-    public void Draw()
-    {
-        foreach(var Chunk in ActiveChunks)
-        {
-            Chunk.Render();
-        }
-    }
-
     public void Update(float DeltaTime = 0)
     {
         WorldTime += DeltaTime;
@@ -70,6 +62,19 @@ public class World
                 Chunk?.Generate();
                 DoneUpdatingChunk = false;
             });
+        }
+    }
+
+    public void Render(Shader Shader)
+    {
+       
+        foreach(var Chunk in ActiveChunks)
+        {
+            Shader.SetMatrix("View", Graphics.ActiveCamera.GetViewMatrix());
+            Shader.SetMatrix("Projection", Graphics.ActiveCamera.GetProjectionMatrix());
+            Shader.SetMatrix("Transform", Matrix4.CreateTranslation(Chunk.Center * (Chunk.VoxelsPerChunk * 0.1f - 0.1f)));
+
+            Chunk.ChunkMesh?.Draw();
         }
     }
 }

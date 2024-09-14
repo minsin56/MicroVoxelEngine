@@ -69,4 +69,9 @@ public class Shader
     {
         GL.UniformMatrix4(GetUniformLocation(Name),false,ref Mat);
     }
+
+    public void SetVec3(string Name, Vector3 Value)
+    {
+        GL.Uniform3(GetUniformLocation(Name),Value);
+    }
 }

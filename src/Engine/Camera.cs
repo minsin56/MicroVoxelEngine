@@ -25,7 +25,7 @@ public class Camera
 
 
     public Matrix4 GetViewMatrix() => Matrix4.LookAt(Position, Position + Forward, Up);
-    public Matrix4 GetProjectionMatrix() => Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(FOV),Aspect,0.1f,5000.0f);
+    public Matrix4 GetProjectionMatrix() => Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(FOV),Aspect,0.1f,1000.0f);
 
     public void UpdateCameraVectors()
     {
